@@ -1,0 +1,32 @@
+
+- rule: F001_ServiceAccount_Token_Access
+  desc: Detect access to a Kubernetes ServiceAccount token
+  condition: >
+    open_read and
+    fd.name = /var/run/secrets/kubernetes.io/serviceaccount/token
+    container.id != host 
+  output: >
+    F001 ServiceAccount token accessed
+    (user=%user.name
+    process=%proc.name
+    pod=%k8s.pod.name
+    namespace=%k8s.ns.name
+    file=%fd.name)
+  priority: WARNING
+  tags: [kubernetes, serviceaccount, F001]
+
+- rule: F002_ServiceAccount_CA_Certificate_Access
+  desc: Detect access to a Kubernetes ServiceAccount CA certificate 
+  condition: >
+    open_read and
+    fd.name = /var/run/secrets/kubernetes.io/serviceaccount/ca.crt and
+    container.id != host
+  output: >
+    F002 ServiceAccount CA certificate accessed
+    (user=%user.name
+    process=%proc.name
+    pod=%k8s.pod.name
+    namespace=%k8s.ns.name
+    file=%fd.name)
+  priority: INFORMATIONAL
+  tags: [kubernetes, serviceaccount, F002]
